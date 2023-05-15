@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:anypoint-mq="http://www.mulesoft.org/schema/mule/anypoint-mq" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/mule/anypoint-mq/current/mule-anypoint-mq.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="f0e211c0-24e0-4197-bab2-000298c13d17" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<anypoint-mq:config name="Anypoint_MQ_Config" doc:name="Anypoint MQ Config" doc:id="5aac8c47-ca7e-457a-a080-7636388d13ea" >
+		<anypoint-mq:connection url="https://mq-us-east-1.anypoint.mulesoft.com/api/v1/organizations/a7d95bf7-03e1-4ce5-9f8b-80df0243b7f9/environments/0a83ed1c-3136-4dfd-9230-a953dfda872c" clientId="7cb723a4ca9047f78d915eefac536acd" clientSecret="E99dC232091043309759531d74210421" />
+	</anypoint-mq:config>
+	<flow name="anypoint_mqFlow" doc:id="3aee4ec9-e58e-49ce-9756-d238ab9b7a5d" >
+		<http:listener doc:name="Listener" doc:id="6accc548-323d-4ee4-bf58-483c5cf3ca76" config-ref="HTTP_Listener_config" path="/queue"/>
+		<logger level="INFO" doc:name="Logger" doc:id="9c593a6e-b350-4bac-8709-246a6767e21f" message="#[payload]"/>
+		<anypoint-mq:publish doc:id="22902861-3993-4374-8e30-8bf08cf1f0bd" config-ref="Anypoint_MQ_Config" destination="test"/>
+	</flow>
+	<flow name="anypoint_mqFlow1" doc:id="3b21a6d8-a058-4f38-a878-6a42924a7cb4" >
+		<anypoint-mq:subscriber doc:name="Subscriber" doc:id="3608e409-867b-4dcf-9a85-f104f9a5c7f8" config-ref="Anypoint_MQ_Config" destination="test"/>
+		<logger level="INFO" doc:name="Logger" doc:id="ffbd7ba8-c5f7-4110-bca5-fcb282a11e0e" message="#[payload]"/>
+	</flow>
+</mule>
